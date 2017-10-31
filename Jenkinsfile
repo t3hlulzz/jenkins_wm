@@ -20,5 +20,23 @@ pipeline
             sh 'echo Testing 1..2..3'
             }
         }
+        stage ('Upload to Artifactory')
+        {
+        agent any
+            steps
+            {
+            def server = Artifactory.server 'arti'
+
+                        def uploadSpec = """{
+                          "files": [
+                          {
+                          "pattern": "**/*.war",
+                          "target": "maven/"
+                          }
+                                  ]
+                                  }"""
+                                  server.upload(uploadSpec)
+            }
+        }
     }
 }
