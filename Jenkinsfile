@@ -22,6 +22,8 @@ pipeline
         }
         post
         {
+        always
+        {
             def server = Artifactory.server 'arti'
 
                         def uploadSpec = """{
@@ -34,6 +36,7 @@ pipeline
                                   }"""
                                   server.upload(uploadSpec)
 
+        }
         }
     }
 }
