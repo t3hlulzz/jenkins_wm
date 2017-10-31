@@ -18,12 +18,7 @@ pipeline
             steps
             {
             sh 'echo Testing 1..2..3'
-            }
-        }
-        post
-        {
-        always
-        {
+
             def server = Artifactory.server 'arti'
 
                         def uploadSpec = """{
@@ -35,8 +30,7 @@ pipeline
                                   ]
                                   }"""
                                   server.upload(uploadSpec)
-
-        }
+            }
         }
     }
 }
