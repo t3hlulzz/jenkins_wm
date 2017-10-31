@@ -20,7 +20,7 @@ pipeline
             sh 'echo Testing 1..2..3'
             }
         }
-        stage ('Upload to Artifactory')
+        post
         {
         agent any
             steps
