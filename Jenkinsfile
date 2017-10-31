@@ -23,8 +23,7 @@ pipeline
         post
         {
         agent any
-            steps
-            {
+
             def server = Artifactory.server 'arti'
 
                         def uploadSpec = """{
@@ -36,7 +35,7 @@ pipeline
                                   ]
                                   }"""
                                   server.upload(uploadSpec)
-            }
+
         }
     }
 }
