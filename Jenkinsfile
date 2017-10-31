@@ -22,8 +22,6 @@ pipeline
         }
         post
         {
-        agent any
-
             def server = Artifactory.server 'arti'
 
                         def uploadSpec = """{
