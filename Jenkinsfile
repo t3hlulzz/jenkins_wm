@@ -1,6 +1,6 @@
 
 node {
-    def server = Artifactory.newServer url: 'http://172.17.0.2:8081/artifactory', username: 'admin', password: 'password' //credentialsId: CREDENTIALS
+    def server = Artifactory.newServer url: 'http://172.18.0.3:8081/artifactory', username: 'admin', password: 'password' //credentialsId: CREDENTIALS
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
