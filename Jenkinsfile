@@ -1,6 +1,5 @@
-
 node {
-    def server = Artifactory.newServer url: 'http://172.18.0.3:8081/artifactory', credentialsId: admp //username: 'admin', password: 'password'
+    def server = Artifactory.newServer url: 'http://172.17.0.3:8081/artifactory', credentialsId: 'admp' //username: 'admin', password: 'password'
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
@@ -9,7 +8,7 @@ node {
     }
 
     stage ('Artifactory configuration') {
-        rtMaven.tool = 'M2' // Tool name from Jenkins configuration
+        rtMaven.tool = 'M3' // Tool name from Jenkins configuration
         rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
         rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo:'libs-snapshot', server: server
         buildInfo = Artifactory.newBuildInfo()
@@ -17,7 +16,7 @@ node {
 
     stage ('Exec Maven') {
         docker.image('maven').inside {
-            withEnv(['JAVA_HOME=/docker-java-home']) { // Java/Maven home of the container
+            withEnv(['JAVA_HOME=/docker-java-home', 'MAVEN_HOME=/usr/share/maven']) { // Java/Maven home of the container
                 rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
             }
         }
