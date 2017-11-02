@@ -77,7 +77,7 @@ node {
 
     stage ('Build docker image')
     {
-      sh 'docker build -t . warapp:latest'
+      sh 'docker build . -t warapp:latest'
     }
 
 }
