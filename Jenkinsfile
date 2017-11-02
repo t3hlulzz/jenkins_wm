@@ -3,7 +3,7 @@ node {
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
-    stage ('Clone') {
+    stage ('Git Clone') {
         git url: 'https://github.com/t3hlulzz/jenkins_wm.git'
     }
 
@@ -77,7 +77,7 @@ node {
 
     stage ('Build docker image')
     {
-      sh 'docker build . -t warapp:latest'
+      sh 'docker build . -t warapp:build-${BUILD_NUMBER}'
     }
 
 }
