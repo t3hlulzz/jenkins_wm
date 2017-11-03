@@ -46,12 +46,11 @@ node {
     stage ('Promote build to release repo')
     {
     def promotionConfig = [
-    // Mandatory parameters
+
     'buildName'          : buildInfo.name,
     'buildNumber'        : buildInfo.number,
     'targetRepo'         : 'libs-release-local',
 
-    // Optional parameters
     'comment'            : 'Promotion',
     'sourceRepo'         : 'libs-snapshot-local',
     'status'             : 'Released',
