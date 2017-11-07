@@ -14,7 +14,7 @@ node {
         buildInfo = Artifactory.newBuildInfo()
     }
 
-    stage ('Maven goes to war') {
+    stage ('Build with maven') {
         docker.image('maven').inside {
             withEnv(['JAVA_HOME=/docker-java-home', 'MAVEN_HOME=/usr/share/maven']) { // Java/Maven home of the container
                 rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
@@ -22,6 +22,14 @@ node {
             }
         }
     }
+
+    // stage ('Testing with sonar')
+    // {
+    //   docker.image('sonarqube').inside
+    //   {
+    //     sh 'mvn sonar:sonar'
+    //   }
+    // }
 
     stage ('Publish build info') {
         server.publishBuildInfo buildInfo
@@ -31,17 +39,6 @@ node {
     {
       sh 'echo Testing 1..2...3'
     }
-
-    // stage ('XRay scan')
-    // {
-    //   server.publishBuildInfo buildInfo
-    //   def scanConfig = [
-    //   'buildName'      : buildInfo.name,
-    //   'buildNumber'    : buildInfo.number
-    //   ]
-    //   def scanResult = server.xrayScan scanConfig
-    //   echo scanResult as String
-    // }
 
     stage ('Promote build to release repo')
     {
@@ -77,6 +74,25 @@ node {
     stage ('Build docker image')
     {
       sh 'docker build . -t warapp:build-${BUILD_NUMBER}'
+    }
+
+    stage ('Tag and push docker image')
+    {
+      sh 'docker tag warapp:build-${BUILD_NUMBER} 172.17.0.4:5001/warapp:build-${BUILD_NUMBER}'
+      sh 'docker push 172.17.0.4:5001/warapp:build-${BUILD_NUMBER}'
+    }
+
+    stage ('Promote docker image to release repo')
+    {
+      sh 'docker tag 172.17.0.4:5001/warapp:build-${BUILD_NUMBER} 172.17.0.4:5002/warapp:build-${BUILD_NUMBER}'
+      sh 'docker push 172.17.0.4:5002/warapp:build-${BUILD_NUMBER}'
+    }
+
+    stage ('Cleanup images')
+    {
+      sh 'docker rmi warapp:build-${BUILD_NUMBER} -f'
+      sh 'docker rmi 172.17.0.4:5001/warapp:build-${BUILD_NUMBER} -f'
+      sh 'docker rmi 172.17.0.4:5002/warapp:build-${BUILD_NUMBER} -f'
     }
 
 }
